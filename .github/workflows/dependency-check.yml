@@ -29,9 +29,12 @@ jobs:
       - name: Run Dependency-Check
         run: |
           mkdir -p reports
+          export DISABLE_ANALYZERS=AssemblyAnalyzer
           bash dependency-check/dependency-check/bin/dependency-check.sh \
             --project "FlaskApp" \
             --scan ./ \
             --format "HTML" \
             --out reports
-            --disableAnalyzer org.owasp.dependencycheck.analyzer.AssemblyAnalyzer
+            
+      
+          
