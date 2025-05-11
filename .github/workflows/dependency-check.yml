@@ -21,11 +21,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Dependency-Check CLI
+      - name: Download and Set Up OWASP Dependency-Check
         run: |
-          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
-          unzip dependency-check-8.4.0-release.zip -d dc
-          sudo mv dc/dependency-check /usr/local/bin/
+            wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
+            unzip dependency-check-8.4.0-release.zip -d dc
+            chmod +x dc/dependency-check/bin/dependency-check.sh
+            mv dc/dependency-check /usr/local/bin/dependency-check
+            ln -s /usr/local/bin/dependency-check/bin/dependency-check.sh /usr/local/bin/dependency-check
+        
+
 
       - name: Run OWASP Dependency-Check
         run: |
