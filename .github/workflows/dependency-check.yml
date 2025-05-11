@@ -34,4 +34,4 @@ jobs:
             --scan ./ \
             --format "HTML" \
             --out reports
-            --disableAssembly
+            --disableAnalyzer org.owasp.dependencycheck.analyzer.AssemblyAnalyzer
