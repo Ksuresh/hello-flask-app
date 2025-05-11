@@ -1,0 +1,41 @@
+name: OWASP Dependency-Check (SCA)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+    name: Scan Python dependencies
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+
+      - name: Install Dependency-Check CLI
+        run: |
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
+          unzip dependency-check-8.4.0-release.zip -d dc
+          sudo mv dc/dependency-check /usr/local/bin/
+
+      - name: Run OWASP Dependency-Check
+        run: |
+          mkdir -p reports
+          dependency-check --project "FlaskApp" \
+                           --scan ./ \
+                           --format "HTML" \
+                           --out reports
+
+      - name: Upload Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports
