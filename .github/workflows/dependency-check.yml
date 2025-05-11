@@ -34,3 +34,4 @@ jobs:
             --scan ./ \
             --format "HTML" \
             --out reports
+            --disableAssembly
