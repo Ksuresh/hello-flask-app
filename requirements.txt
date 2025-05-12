@@ -1,2 +1,2 @@
-flask
+flask==0.12  # known vulnerable version
 pytest
