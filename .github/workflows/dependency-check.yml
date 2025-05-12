@@ -9,27 +9,29 @@ on:
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
-    name: Scan Python dependencies using OWASP Dependency-Check
-
-    env:
-      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+    name: Run OWASP Dependency-Check CLI
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Prepare reports folder
-        run: mkdir -p ${{ github.workspace }}/reports
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-      - name: Run OWASP Dependency-Check via Docker
+      - name: Download OWASP Dependency-Check CLI
         run: |
-          docker run --rm \
-            -e NVD_API_KEY=$NVD_API_KEY \
-            -v ${{ github.workspace }}:/src \
-            -v ${{ github.workspace }}/reports:/src/reports \
-            owasp/dependency-check \
+          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
+          unzip dependency-check-8.4.0-release.zip -d dependency-check
+
+      - name: Run OWASP Dependency-Check
+        run: |
+          mkdir -p reports
+          bash dependency-check/dependency-check/bin/dependency-check.sh \
             --project "FlaskApp" \
-            --scan /src \
-            --format "HTML" \
-            --out /src/reports \
+            --scan ./ \
+            --out reports \
+            --format HTML \
             --disableAssembly
