@@ -30,8 +30,8 @@ jobs:
         run: |
           mkdir -p reports
           docker run --rm \
-            --volume $(pwd):/src \
-            --volume $(pwd)/reports:/report \
+            -v ${{ github.workspace }}:/src \
+            -v ${{ github.workspace }}/reports:/src/reports \
             owasp/dependency-check \
             --project "FlaskApp" \
             --scan ./ \
