@@ -26,15 +26,18 @@ jobs:
           wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
           unzip dependency-check-8.4.0-release.zip -d dependency-check
 
-      - name: Run Dependency-Check
+      - name: Run OWASP Dependency-Check via Docker
         run: |
           mkdir -p reports
-          export DISABLE_ANALYZERS=AssemblyAnalyzer
-          bash dependency-check/dependency-check/bin/dependency-check.sh \
+          docker run --rm \
+            --volume $(pwd):/src \
+            --volume $(pwd)/reports:/report \
+            owasp/dependency-check \
             --project "FlaskApp" \
             --scan ./ \
             --format "HTML" \
             --out reports
-            
+            --disableAssembly
+
       
           
