@@ -9,38 +9,33 @@ on:
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
-    name: Scan Python dependencies
+    name: Scan Python dependencies using OWASP Dependency-Check
+
+    env:
+      NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Download OWASP Dependency-Check
-        run: |
-          wget https://github.com/jeremylong/DependencyCheck/releases/download/v8.4.0/dependency-check-8.4.0-release.zip
-          unzip dependency-check-8.4.0-release.zip -d dependency-check
+      - name: Set up reports folder
+        run: mkdir -p ${{ github.workspace }}/reports
 
       - name: Run OWASP Dependency-Check via Docker
-        env:
-          NVD_API_KEY: ${ secrets.NVD_API_KEY }
         run: |
-          mkdir -p ${{ github.workspace }}/reports
           docker run --rm \
-            -env NVD_API_KEY= ${ secrets.NVD_API_KEY } \
+            -e NVD_API_KEY=$NVD_API_KEY \
             -v ${{ github.workspace }}:/src \
-            -v ${{ github.workspace }}/reports:/src/reports \
+            -v ${{ github.workspace }}/reports:/report \
             owasp/dependency-check \
             --project "FlaskApp" \
-            --scan ./ \
+            --scan /src \
             --format "HTML" \
-            --out reports
+            --out /report \
             --disableAssembly
 
-      
-          
+      - name: Upload HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: reports/dependency-check-report.html
