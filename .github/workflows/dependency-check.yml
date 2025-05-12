@@ -34,8 +34,8 @@ jobs:
             --out /report \
             --disableAssembly
 
-      - name: Upload HTML Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: dependency-check-report
-          path: reports/dependency-check-report.html
+    #   - name: Upload HTML Report
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #       name: dependency-check-report
+    #       path: reports/dependency-check-report.html
