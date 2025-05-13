@@ -1,2 +1,2 @@
-flask
-pyyaml
+flask==2.2.5
+pyyaml==3.10
