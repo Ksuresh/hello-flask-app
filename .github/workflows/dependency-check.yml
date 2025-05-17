@@ -35,7 +35,7 @@ jobs:
             --out reports \
             --format HTML \
             --disableAssembly
-      - name: Print OWASP Dependency-Check Summary to Console
+      - name: Print OWASP Dependency-Check Summary to Console testing
         run: |
           echo "================ Dependency-Check Summary ================"
           grep -i "CVE-" reports/dependency-check-report.html || echo "No CVEs found."
